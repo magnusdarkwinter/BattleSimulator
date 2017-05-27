@@ -25,14 +25,14 @@ namespace BattleSimulator
                 if(play.ToLower() == "y")
                 {
                     // Show Fighters
-                    Fighter fighterOne = ff.GetRandomFighter();
-                    Fighter fighterTwo = ff.GetRandomFighter();
-                    ShowFighters(fighterOne, fighterTwo);
+                    Fighter fighter1 = ff.GetRandomFighter();
+                    Fighter fighter2 = ff.GetRandomFighter();
+                    ShowFighters(fighter1, fighter2);
 
-                    string firstAttacker = RollInitiative(fighterOne, fighterTwo);
+                    string firstAttacker = RollInitiative(fighter1, fighter2);
 
                     Console.WriteLine("\n### Press any ENTER to battle ###");
-                    string winner = Battle(fighterOne, fighterTwo, firstAttacker);
+                    string winner = Battle(fighter1, fighter2, firstAttacker);
 
                     Console.WriteLine("\n\n *** {0} Wins! ***\n\n", winner);
                 }
