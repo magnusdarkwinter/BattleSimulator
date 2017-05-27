@@ -1,0 +1,8 @@
+/home/darkwinter/Dev/Sandbox/BattleSimulator/bin/Debug/netcoreapp1.1/BattleSimulator.deps.json
+/home/darkwinter/Dev/Sandbox/BattleSimulator/bin/Debug/netcoreapp1.1/BattleSimulator.runtimeconfig.json
+/home/darkwinter/Dev/Sandbox/BattleSimulator/bin/Debug/netcoreapp1.1/BattleSimulator.runtimeconfig.dev.json
+/home/darkwinter/Dev/Sandbox/BattleSimulator/bin/Debug/netcoreapp1.1/BattleSimulator.dll
+/home/darkwinter/Dev/Sandbox/BattleSimulator/bin/Debug/netcoreapp1.1/BattleSimulator.pdb
+/home/darkwinter/Dev/Sandbox/BattleSimulator/obj/Debug/netcoreapp1.1/BattleSimulator.AssemblyInfo.cs
+/home/darkwinter/Dev/Sandbox/BattleSimulator/obj/Debug/netcoreapp1.1/BattleSimulator.dll
+/home/darkwinter/Dev/Sandbox/BattleSimulator/obj/Debug/netcoreapp1.1/BattleSimulator.pdb
