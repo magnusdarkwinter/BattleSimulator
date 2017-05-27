@@ -5,10 +5,17 @@ namespace BattleSimulator
 {
     class GameEngine
     {
+        private Random rnd;
+        private FighterFactory ff;
+
+        public GameEngine()
+        {
+            rnd = new Random();
+            ff = new FighterFactory();
+        }
+
         public void Run()
         {
-            FighterFactory ff = new FighterFactory();
-
             while(true)
             {
                 // Main Menu
@@ -37,13 +44,14 @@ namespace BattleSimulator
             }
         }
 
-        public void ShowFighters(Fighter fighterOne, Fighter fighterTwo)
+        public void ShowFighters(Fighter fighter1, Fighter fighter2)
         {
-            Fighter[] fighters = new Fighter[] { fighterOne, fighterTwo };
+            var fighters = new [] { fighter1, fighter2 };
             foreach(var fighter in fighters)
             {
                 Console.WriteLine("----------------------------");
-                Console.WriteLine("\nName: {0}\nHealth: {1}\nAtk: {2}\nDef: {3}\nInit: {4}\n", fighter.Name, fighter.Health, fighter.Atk, fighter.Def, fighter.Init);
+                Console.WriteLine("\nName: {0}\nHealth: {1}\nAtk: {2}\nDef: {3}\nInit: {4}\n", 
+                    fighter.Name, fighter.Health, fighter.Atk, fighter.Def, fighter.Init);
                 Console.WriteLine("----------------------------");
             }
         }
@@ -57,7 +65,6 @@ namespace BattleSimulator
             var defender = fighters.Single(f => f.Name != firstAttacker);
 
             // Roll damage
-            Random rnd = new Random();
             int roll20 = rnd.Next(1, 20);
             int damage = attacker.Atk + roll20;
             // damage step: all attacks do a min of 1 dmg.
@@ -71,14 +78,14 @@ namespace BattleSimulator
             }
             else
             {
-                Console.WriteLine("\n{0} attacks for {1} damage; {2} now has {3} health\n", attacker.Name, totalDmg, defender.Name, defender.Health);
+                Console.WriteLine("\n{0} attacks for {1} damage; {2} now has {3} health\n", 
+                    attacker.Name, totalDmg, defender.Name, defender.Health);
                 return Battle(fighter1, fighter2, defender.Name);
             }
         }
 
         public string RollInitiative(Fighter fighter1, Fighter fighter2)
         {
-            Random rnd = new Random();
             int roll1 = rnd.Next(1, 20);
             int roll2 = rnd.Next(1, 20);
 
