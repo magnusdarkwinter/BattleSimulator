@@ -25,11 +25,9 @@ namespace BattleSimulator
             return rnd.Next(1, 20) + this.Init;
         }   
 
-        public int RollDamage(int def)
+        public int RollDamage()
         {
-            var damage = this.Atk + rnd.Next(1, 20);
-            // all attacks do a min of 1 dmg.
-            return (damage <= def) ? 1 : damage - def;
+            return this.Atk + rnd.Next(1, 20);
         }
     }
 

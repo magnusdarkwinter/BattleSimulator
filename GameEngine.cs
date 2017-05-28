@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace BattleSimulator
 {
@@ -24,13 +25,16 @@ namespace BattleSimulator
                 
                 if(play.ToLower() == "y")
                 {
-                    var fighter1 = ff.GetRandomFighter();
-                    var fighter2 = ff.GetRandomFighter();
-
-                    ShowFighters(fighter1, fighter2);
+                    var fighters = new List<Fighter>();
+                    foreach(var fighter in Enumerable.Range(0, 5))
+                    {
+                        fighters.Add(ff.GetRandomFighter());
+                    }
+                    
+                    ShowFighters(fighters.ToArray());
 
                     Console.WriteLine("\n### Press any ENTER to battle ###");
-                    var winner = Battle(GetFirstAttacker(fighter1, fighter2), fighter1, fighter2);
+                    var winner = Battle(GetFirstAttacker(fighters.ToArray()), fighters.ToArray());
 
                     Console.WriteLine("\n\n *** {0} Wins! ***\n\n", winner);
                 }
@@ -59,22 +63,47 @@ namespace BattleSimulator
 
             // Would need to have an array of defenders? or some mech to determin who attacks who for 3+ fighters
             var attacker = fighters.Single(f => f.Name == firstAttacker);
-            var defender = fighters.Single(f => f.Name != firstAttacker);
+            var defenders = fighters.Where(f => f.Name != firstAttacker);
+            var defender = defenders.ToList()[rnd.Next(0, defenders.ToList().Count - 1)]; // Pick random fighter to attack
 
             // Damage Step
-            var damage = attacker.RollDamage(defender.Def);
+            var roll = attacker.RollDamage();
+            var damage = (roll <= defender.Def) ? 1 : roll - defender.Def; // all attacks do a min of 1 dmg.
             defender.Health -= damage;
 
+            var remainingFighters = new List<Fighter>();
+
             // Check for death
-            if(defender.Health <= 0)
+            foreach(var checkDef in defenders.ToList())
+            {
+                if(checkDef.Health > 0) 
+                {
+                    remainingFighters.Add(checkDef);
+                }
+            }
+
+            if(remainingFighters.Count < 1)
             {
                 return attacker.Name;
             }
             else
             {
-                Console.WriteLine("\n{0} attacks for {1} damage; {2} now has {3} health\n", 
-                    attacker.Name, damage, defender.Name, defender.Health);
-                return Battle(defender.Name, attacker, defender);
+                remainingFighters.Add(attacker);
+                var nextAttacker = "";
+                if(defender.Health < 1)
+                {
+                    Console.WriteLine("\n{0} attacks {1} for {2} damage; {1} Has Died!\n",
+                        attacker.Name, defender.Name, damage);
+                    nextAttacker = remainingFighters.First().Name;
+                }
+                else
+                {
+                    Console.WriteLine("\n{0} attacks {1} for {2} damage; {1} now has {3} health\n", 
+                        attacker.Name, defender.Name, damage, defender.Health);
+                    nextAttacker = defender.Name;
+                }
+                
+                return Battle(nextAttacker, remainingFighters.ToArray());
             }
         }
 
