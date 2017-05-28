@@ -7,6 +7,7 @@ namespace BattleSimulator
     {
         public string Name;
         public int Health, Atk, Def, Init;
+        private Random rnd;
 
         public Fighter(string name, int health, int atk, int def, int init)
         {
@@ -15,6 +16,20 @@ namespace BattleSimulator
             this.Atk = atk;
             this.Def = def;
             this.Init = init;
+
+            rnd = new Random();
+        }
+
+        public int RollInitiative()
+        {
+            return rnd.Next(1, 20) + this.Init;
+        }   
+
+        public int RollDamage(int def)
+        {
+            var damage = this.Atk + rnd.Next(1, 20);
+            // all attacks do a min of 1 dmg.
+            return (damage <= def) ? 1 : damage - def;
         }
     }
 
@@ -45,8 +60,8 @@ namespace BattleSimulator
 
         private string GetRandomName()
         {
-            string[] firstNames = new string[] { "Razol", "Ne-pik", "Dirako", "Renra", "Korta", "Kotor", "Akton", "Thiak", "Keje", "Lelou", "Jadpox","Neren", "Urlak", "Bugella", "Rysra", "Urzuc", "Virthar", "Talhat", "Dashdrex", "Lennpal" };
-            string[] lastNames = new string[] { "Oakforge", "Silverwater", "Bornmountain", "Landgazer", "Plainsblade", "Mazeleaf", "Arrowhalf", "Hunterbattle", "Roadgazer", "Staffbull", "Busheyes", "Furywalk", "Wargred", "Manegold", "Shadelven", "Landersheep", "Oakhame", "Bushmaze", "Axebolt", "Wararrow" };
+            var firstNames = new string[] { "Razol", "Ne-pik", "Dirako", "Renra", "Korta", "Kotor", "Akton", "Thiak", "Keje", "Lelou", "Jadpox","Neren", "Urlak", "Bugella", "Rysra", "Urzuc", "Virthar", "Talhat", "Dashdrex", "Lennpal" };
+            var lastNames = new string[] { "Oakforge", "Silverwater", "Bornmountain", "Landgazer", "Plainsblade", "Mazeleaf", "Arrowhalf", "Hunterbattle", "Roadgazer", "Staffbull", "Busheyes", "Furywalk", "Wargred", "Manegold", "Shadelven", "Landersheep", "Oakhame", "Bushmaze", "Axebolt", "Wararrow" };
             return string.Format("{0} {1}", firstNames[rnd.Next(0, 19)], lastNames[rnd.Next(0, 19)]);
         }
     }

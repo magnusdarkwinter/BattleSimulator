@@ -20,19 +20,17 @@ namespace BattleSimulator
             {
                 // Main Menu
                 Console.Write("\n\nReady to Play? (n/y) >>>");
-                string play = Console.ReadLine();
+                var play = Console.ReadLine();
                 
                 if(play.ToLower() == "y")
                 {
-                    // Show Fighters
-                    Fighter fighter1 = ff.GetRandomFighter();
-                    Fighter fighter2 = ff.GetRandomFighter();
+                    var fighter1 = ff.GetRandomFighter();
+                    var fighter2 = ff.GetRandomFighter();
+
                     ShowFighters(fighter1, fighter2);
 
-                    string firstAttacker = RollInitiative(fighter1, fighter2);
-
                     Console.WriteLine("\n### Press any ENTER to battle ###");
-                    string winner = Battle(fighter1, fighter2, firstAttacker);
+                    var winner = Battle(GetFirstAttacker(fighter1, fighter2), fighter1, fighter2);
 
                     Console.WriteLine("\n\n *** {0} Wins! ***\n\n", winner);
                 }
@@ -44,9 +42,8 @@ namespace BattleSimulator
             }
         }
 
-        public void ShowFighters(Fighter fighter1, Fighter fighter2)
+        public void ShowFighters(params Fighter[] fighters)
         {
-            var fighters = new [] { fighter1, fighter2 };
             foreach(var fighter in fighters)
             {
                 Console.WriteLine("----------------------------");
@@ -56,20 +53,17 @@ namespace BattleSimulator
             }
         }
 
-        public string Battle(Fighter fighter1, Fighter fighter2, string firstAttacker)
+        public string Battle(string firstAttacker, params Fighter[] fighters)
         {
             Console.ReadKey();
 
-            var fighters = new [] { fighter1, fighter2 };
+            // Would need to have an array of defenders? or some mech to determin who attacks who for 3+ fighters
             var attacker = fighters.Single(f => f.Name == firstAttacker);
             var defender = fighters.Single(f => f.Name != firstAttacker);
 
-            // Roll damage
-            int roll20 = rnd.Next(1, 20);
-            int damage = attacker.Atk + roll20;
-            // damage step: all attacks do a min of 1 dmg.
-            int totalDmg = (damage <= defender.Def) ? 1 : damage - defender.Def;
-            defender.Health -= totalDmg;
+            // Damage Step
+            var damage = attacker.RollDamage(defender.Def);
+            defender.Health -= damage;
 
             // Check for death
             if(defender.Health <= 0)
@@ -79,33 +73,28 @@ namespace BattleSimulator
             else
             {
                 Console.WriteLine("\n{0} attacks for {1} damage; {2} now has {3} health\n", 
-                    attacker.Name, totalDmg, defender.Name, defender.Health);
-                return Battle(fighter1, fighter2, defender.Name);
+                    attacker.Name, damage, defender.Name, defender.Health);
+                return Battle(defender.Name, attacker, defender);
             }
         }
 
-        public string RollInitiative(Fighter fighter1, Fighter fighter2)
+        public string GetFirstAttacker(params Fighter[] fighters)
         {
-            int roll1 = rnd.Next(1, 20);
-            int roll2 = rnd.Next(1, 20);
+            var winner = "";
+            var highestRoll = 0;
 
-            int score1 = roll1 + fighter1.Init;
-            int score2 = roll2 + fighter2.Init;
+            foreach(var fighter in fighters)
+            {
+                var roll = fighter.RollInitiative();
+                if(roll >= highestRoll)
+                {
+                    winner = fighter.Name;
+                    highestRoll = roll;
+                }
+            }
 
-            if(score1 > score2)
-            {
-                Console.WriteLine("\n{0} Attacks First!\n", fighter1.Name);
-                return fighter1.Name;
-            }
-            else if(score1 < score2)
-            {
-                Console.WriteLine("\n{0} Attacks First!\n", fighter2.Name);
-                return fighter2.Name;
-            }
-            else
-            {
-                return RollInitiative(fighter1, fighter2);
-            }
+            Console.WriteLine("\n{0} Attacks First!\n", winner);
+            return winner;
         }
     }
 }
